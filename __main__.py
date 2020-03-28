@@ -64,7 +64,7 @@ def main():
         print(message)
         if args.email:
             sendEmail("Invalid Session!", message)
-            sys.exit(1)
+        sys.exit(1)
 
     # terminate script if it's not available
     if os.getenv('NOT_AVAILABLE_KEYWORD') in r.text:
