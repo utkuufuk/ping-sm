@@ -58,23 +58,25 @@ except Timeout:
     sys.exit(1)
 
 if NOT_LOGGED_IN_KEYWORD in r.text:
-    print(f"[{timestamp}]: Invalid session, could not check availability.")
-    requests.post(
-        MAILGUN_DOMAIN,
-        auth=("api", MAILGUN_SECRET),
-        data={
-            "from": EMAIL_FROM,
-            "to": [EMAIL_TO],
-            "subject": "Sanalmarket Available!",
-            "text": message
-        }
-    )
+    message = f"[{timestamp}]: Invalid session, could not check availability."
+    print(message)
+    if args.email:
+        requests.post(
+            MAILGUN_DOMAIN,
+            auth=("api", MAILGUN_SECRET),
+            data={
+                "from": EMAIL_FROM,
+                "to": [EMAIL_TO],
+                "subject": "Invalid Session!",
+                "text": message
+            }
+        )
 
-    # create a lock file so that we don't spam ourselves with notification emails
-    f = open(LOCK_FILE, "w")
-    f.write("Found an opening!")
-    f.close()
-    sys.exit(1)
+        # create a lock file so that we don't spam ourselves with notification emails
+        f = open(LOCK_FILE, "w")
+        f.write("")
+        f.close()
+        sys.exit(1)
 
 # terminate script if it's not available
 if NOT_AVAILABLE_KEYWORD in r.text:
@@ -100,5 +102,5 @@ if args.email:
 
     # create a lock file so that we don't spam ourselves with notification emails
     f = open(LOCK_FILE, "w")
-    f.write("Found an opening!")
+    f.write("")
     f.close()
