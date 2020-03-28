@@ -72,8 +72,9 @@ def main():
         sys.exit(0)
 
     # send a notification email if a delivery is available
-    message = f'''[{datetime.now()}]: Sanalmarket is now available:\n
-        {r.text}\nShopping cart: {os.getenv('SHOPPING_CART_URL')}'''
+    message = f"[{datetime.now()}]: Sanalmarket is now available:\n{r.text}"
+    if os.getenv('SHOPPING_CART_URL'):
+        message += f"\nShopping cart: {os.getenv('SHOPPING_CART_URL')}"
     print(message)
     if args.email:
         sendEmail("Sanalmarket Available!", message)
