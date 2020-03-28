@@ -10,7 +10,7 @@ timestamp = datetime.now()
 
 # read program arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('-e', '--email', type=bool,
+parser.add_argument('-e', '--email', type=bool, nargs='?', const=True, default=False,
                     help='Enable notification emails')
 args = parser.parse_args()
 
