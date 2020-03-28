@@ -20,12 +20,11 @@ def sendEmail(subject, message):
             }
         )
     except:
-        print(f"[{datetime.now()}]: Could not send email with subject: {subject}")
+        print(f"[{datetime.now()}]: Could not send email with subject: '{subject}'")
 
     # create a lock file so that we don't spam ourselves with notification emails
-    f = open(os.getenv('LOCK_FILE'), "w")
-    f.write("")
-    f.close()
+    with open(os.getenv('LOCK_FILE'), "w") as f:
+        f.write("")
 
 
 def main():
@@ -39,8 +38,8 @@ def main():
     # abort if an opening was found previously
     if args.email:
         try:
-            open(os.getenv('LOCK_FILE'))
-            print(f"[{datetime.now()}]: Lock file exists, aborting...")
+            with open(os.getenv('LOCK_FILE')):
+                print(f"[{datetime.now()}]: Lock file exists, aborting...")
             sys.exit(0)
         except IOError:
             pass

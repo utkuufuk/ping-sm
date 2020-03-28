@@ -22,11 +22,11 @@ pip3 install -r requirements.txt
 ## Launching
 ```sh
 # launch manually
-python3 ./main.py
+python3 ./__main__.py
 
 # launch manually with notification emails enabled
-python3 ./main.py --email
+python3 ./__main__.py --email
 
 # example cron job
-* * * * * /usr/bin/python3 /home/utku/git/ping-sm/main.py --email 2>&1 >> /home/utku/git/ping-sm/log.log
+* * * * * /usr/bin/python3 /home/utku/git/ping-sm/__main__.py --email 2>&1 >> /home/utku/git/ping-sm/log.log
 ```
