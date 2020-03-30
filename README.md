@@ -1,11 +1,11 @@
 # ping-sm
-Run this script periodically as a cron job. It checks if [Migros Sanalmarket](https://www.migros.com.tr/) is available for delivery to your neighborhood in the next 4 days.
+Run this script periodically as a cron job. It will check if [Migros Sanalmarket](https://www.migros.com.tr/) is available for delivery to your neighborhood in the next 4 days.
 
 
 ## How it works
- * terminates sends you a warning email if session is invalid
- * terminates if a delivery isn't available
- * sends you a notification email if a delivery is available
+ * Sends you a warning email if session is invalid and exits.
+ * Exits if delivery isn't available.
+ * Sends you a notification email if delivery is available.
 
 #### Email Notifications
 You need a Mailgun domain to enable notification emails. You'll have to rely on logs otherwise.
