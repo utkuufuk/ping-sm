@@ -3,7 +3,7 @@ Run this script periodically as a cron job. It will check if [Migros Sanalmarket
 
 
 ## How it works
- * Sends you a warning email if session is invalid and exits.
+ * Sends you a warning email and exits if the cookies are invalid.
  * Exits if delivery isn't available.
  * Sends you a notification email if delivery is available.
 
