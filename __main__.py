@@ -7,6 +7,12 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 
+# a lock file will ensure that we won't spam ourselves with notifications
+def writeLockFile():
+    with open(os.getenv("LOCK_FILE"), "w") as f:
+        f.write("")
+
+
 def sendEmail(subject, message):
     try:
         requests.post(
@@ -19,12 +25,26 @@ def sendEmail(subject, message):
                 "text": message
             }
         )
+        writeLockFile()
     except:
         print(f"[{datetime.now()}]: Could not send email with subject: '{subject}'")
 
-    # create a lock file so that we don't spam ourselves with notification emails
-    with open(os.getenv('LOCK_FILE'), "w") as f:
-        f.write("")
+
+def sendTelegramMessage(message):
+    try:
+        token = os.getenv("TELEGRAM_TOKEN")
+        r = requests.get(
+            f"https://api.telegram.org/bot{token}/sendMessage",
+            params={
+                "chat_id": os.getenv("TELEGRAM_CHAT_ID"),
+                "text": message,
+            })
+        if r.status_code == 200 and r.json()["ok"]:
+            writeLockFile()
+            return
+        raise Exception
+    except:
+        print(f"[{datetime.now()}]: Could not send telegram message.")
 
 
 def main():
@@ -33,10 +53,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-e', '--email', type=bool, nargs='?', const=True, default=False,
                         help='Enable notification emails')
+    parser.add_argument('-t', '--telegram', type=bool, nargs='?', const=True, default=False,
+                        help='Enable Telegram notification messages')
     args = parser.parse_args()
 
     # abort if an opening was found previously
-    if args.email:
+    if args.email or args.telegram:
         try:
             with open(os.getenv('LOCK_FILE')):
                 print(f"[{datetime.now()}]: Lock file exists, aborting...")
@@ -58,12 +80,14 @@ def main():
         print(f"[{datetime.now()}]: The request timed out.")
         sys.exit(1)
 
-    # send warning email & terminate if cookies didn't work
+    # send warning notification & terminate if cookies didn't work
     if os.getenv('NOT_LOGGED_IN_KEYWORD') in r.text:
         message = f"[{datetime.now()}]: Invalid session, could not check availability."
         print(message)
         if args.email:
             sendEmail("Invalid Session!", message)
+        if args.telegram:
+            sendTelegramMessage(message)
         sys.exit(1)
 
     # terminate script if it's not available
@@ -71,13 +95,15 @@ def main():
         print(f"[{datetime.now()}]: Sanalmarket is not available.")
         sys.exit(0)
 
-    # send a notification email if a delivery is available
+    # send notification if delivery is available
     message = f"[{datetime.now()}]: Sanalmarket is now available:\n{r.text}"
     if os.getenv('SHOPPING_CART_URL'):
         message += f"\nShopping cart: {os.getenv('SHOPPING_CART_URL')}"
     print(message)
     if args.email:
         sendEmail("Sanalmarket Available!", message)
+    if args.telegram:
+        sendTelegramMessage(message)
 
 
 if __name__ == '__main__':
