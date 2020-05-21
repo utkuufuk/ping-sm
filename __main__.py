@@ -97,8 +97,6 @@ def main():
     # terminate script if it's not available
     if not r.text:
         print(f"[{datetime.now()}]: Sanalmarket is not available.")
-        if args.verbose:
-            print(f"\t{r.text}")
         sys.exit(0)
 
     # send notification if delivery is available
