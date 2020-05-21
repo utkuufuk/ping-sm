@@ -91,7 +91,7 @@ def main():
         sys.exit(1)
 
     # terminate script if it's not available
-    if os.getenv('NOT_AVAILABLE_KEYWORD') in r.text:
+    if not r.text:
         print(f"[{datetime.now()}]: Sanalmarket is not available.")
         sys.exit(0)
 
