@@ -55,6 +55,8 @@ def main():
                         help='Enable notification emails')
     parser.add_argument('-t', '--telegram', type=bool, nargs='?', const=True, default=False,
                         help='Enable Telegram notification messages')
+    parser.add_argument('-v', '--verbose', type=bool, nargs='?', const=True, default=False,
+                        help='Verbose output')
     args = parser.parse_args()
 
     # abort if an opening was found previously
@@ -84,6 +86,8 @@ def main():
     if os.getenv('NOT_LOGGED_IN_KEYWORD') in r.text:
         message = f"[{datetime.now()}]: Invalid session, could not check availability."
         print(message)
+        if args.verbose:
+            print(f"\t{r.text}")
         if args.email:
             sendEmail("Invalid Session!", message)
         if args.telegram:
@@ -93,6 +97,8 @@ def main():
     # terminate script if it's not available
     if not r.text:
         print(f"[{datetime.now()}]: Sanalmarket is not available.")
+        if args.verbose:
+            print(f"\t{r.text}")
         sys.exit(0)
 
     # send notification if delivery is available
